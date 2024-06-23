@@ -16,12 +16,11 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "rootDir": "./src",
-    "baseUrl": "./src",
     "paths": {
-        "#enums/*": ["./enums/*.ts"],
-        "#app/*": ["*.ts"],
-        "#app": ["."],
-        "#test/*": ["./test/*.ts"]
+        "#enums/*": ["./node_modules/pokerogue/src/enums/*.ts"],
+        "#app/*": ["./node_modules/pokerogue/src/*.ts"],
+        "#app": ["./node_modules/pokerogue/src/"],
+        "#test/*": ["./node_modules/pokerogue/src/test/*.ts"],
     }
   },
   "include": ["src"]
