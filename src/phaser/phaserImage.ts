@@ -1,10 +1,10 @@
 import PhaserScene from "#app/phaser/phaserScene";
 
-
-export default class PhaserContainer {
-  protected scene: PhaserScene;
+export default class PhaserImage {
+  private scene: PhaserScene;
   public x: number;
   public y: number;
+  public texture: string;
   public width;
   public height;
   public visible;
@@ -13,10 +13,11 @@ export default class PhaserContainer {
   public frame;
   public list = [];
 
-  constructor(scene: PhaserScene, x?: number, y?: number) {
+  constructor(scene: PhaserScene, x?: number, y?: number, texture?: string) {
     this.scene = scene;
     this.x = x || 0;
-    this.y = y ||0;
+    this.y = y || 0;
+    this.texture = texture;
   }
   setVisible(visible) {
     this.visible = visible;
@@ -62,6 +63,8 @@ export default class PhaserContainer {
 
   setFrame(frame, updateSize?: boolean, updateOrigin?: boolean) {
     // Sets the frame this Game Object will use to render with.
+    this.frame = frame;
+    return frame;
   }
 
   setScale(scale) {

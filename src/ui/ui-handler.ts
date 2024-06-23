@@ -1,7 +1,7 @@
 import { TextStyle, getTextColor } from "./text";
-import { Mode } from "./ui";
 import {Button} from "#enums/buttons";
 import BattleScene from "#app/battle-scene";
+import {Mode} from "#enums/mode";
 
 /**
  * A basic abstract class to act as a holder and processor for UI elements.

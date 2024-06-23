@@ -1,8 +1,7 @@
 import PhaserScene from "#app/phaser/phaserScene";
 
-
-export default class PhaserContainer {
-  protected scene: PhaserScene;
+export default class PhaserPolygon {
+  private scene: PhaserScene;
   public x: number;
   public y: number;
   public width;
@@ -12,11 +11,15 @@ export default class PhaserContainer {
   public style;
   public frame;
   public list = [];
+  public fillColor: string;
+  public fillAlpha: string;
 
-  constructor(scene: PhaserScene, x?: number, y?: number) {
+  constructor(scene: PhaserScene, x?: number, y?: number, texture?: string, fillColor?: string, fillAlpha?: string) {
     this.scene = scene;
     this.x = x || 0;
-    this.y = y ||0;
+    this.y = y || 0;
+    this.fillColor = fillColor;
+    this.fillAlpha = fillAlpha;
   }
   setVisible(visible) {
     this.visible = visible;

@@ -1,4 +1,9 @@
+import BattleScene from "#app/battle-scene";
+import PhaserText from "#app/phaser/phaserText";
+import PhaserScene from "#app/phaser/phaserScene";
+import PhaserBBCodeText from "#app/phaser/phaserBBCodeText";
 import {UiTheme} from "#enums/ui-theme";
+import PhaserInputText from "#app/phaser/phaserInputText";
 
 export enum TextStyle {
   MESSAGE,
@@ -28,6 +33,129 @@ export enum TextStyle {
   MOVE_PP_HALF_FULL,
   MOVE_PP_NEAR_EMPTY,
   MOVE_PP_EMPTY
+}
+
+export function addTextObject(scene: PhaserScene, x: number, y: number, content: string, style: TextStyle, extraStyleOptions?: PhaserTextStyle): PhaserText {
+  const [ scale, styleOptions, shadowColor, shadowXpos, shadowYpos ] = getTextStyleOptions(style, (scene as BattleScene).uiTheme, extraStyleOptions);
+
+  const ret = scene.add.text(x, y, content, styleOptions);
+  ret.setScale(scale);
+  ret.setShadow(shadowXpos, shadowYpos, shadowColor);
+  if (!(styleOptions as PhaserTextStyle).lineSpacing) {
+    ret.setLineSpacing(5);
+  }
+
+  return ret;
+}
+
+export function setTextStyle(obj: PhaserText, scene: PhaserScene, style: TextStyle, extraStyleOptions?: PhaserTextStyle) {
+  const [ scale, styleOptions, shadowColor, shadowXpos, shadowYpos ] = getTextStyleOptions(style, (scene as BattleScene).uiTheme, extraStyleOptions);
+  obj.setScale(scale);
+  obj.setShadow(shadowXpos, shadowYpos, shadowColor);
+  if (!(styleOptions as PhaserTextStyle).lineSpacing) {
+    obj.setLineSpacing(5);
+  }
+}
+
+export function addBBCodeTextObject(scene: PhaserScene, x: number, y: number, content: string, style: TextStyle, extraStyleOptions?: PhaserTextStyle): PhaserBBCodeText {
+  const [ scale, styleOptions, shadowColor, shadowXpos, shadowYpos ] = getTextStyleOptions(style, (scene as BattleScene).uiTheme, extraStyleOptions);
+
+  const ret = new PhaserBBCodeText(scene, x, y, content, styleOptions as PhaserTextStyle);
+  scene.add.existing(ret);
+  ret.setScale(scale);
+  ret.setShadow(shadowXpos, shadowYpos, shadowColor);
+  if (!(styleOptions as PhaserTextStyle).lineSpacing) {
+    ret.setLineSpacing(10);
+  }
+
+  return ret;
+}
+
+export function addTextInputObject(scene: PhaserScene, x: number, y: number, width: number, height: number, style: TextStyle, extraStyleOptions?: PhaserTextStyle): PhaserInputText {
+  const [ scale, styleOptions ] = getTextStyleOptions(style, (scene as BattleScene).uiTheme, extraStyleOptions);
+
+  const ret = new PhaserInputText(scene, x, y, width, height, styleOptions as PhaserTextStyle);
+  scene.add.existing(ret);
+  ret.setScale(scale);
+
+  return ret;
+}
+
+function getTextStyleOptions(style: TextStyle, uiTheme: UiTheme, extraStyleOptions?: PhaserTextStyle): [ number, PhaserTextStyle, string, number, number ] {
+  let shadowXpos = 4;
+  let shadowYpos = 5;
+  const scale = 0.1666666667;
+  const defaultFontSize = 96;
+
+  let styleOptions: PhaserTextStyle = {
+    fontFamily: "emerald",
+    fontSize: 96,
+    color: getTextColor(style, false, uiTheme),
+    padding: {
+      bottom: 6
+    }
+  };
+
+  switch (style) {
+  case TextStyle.SUMMARY:
+  case TextStyle.SUMMARY_ALT:
+  case TextStyle.SUMMARY_BLUE:
+  case TextStyle.SUMMARY_RED:
+  case TextStyle.SUMMARY_PINK:
+  case TextStyle.SUMMARY_GOLD:
+  case TextStyle.SUMMARY_GRAY:
+  case TextStyle.SUMMARY_GREEN:
+  case TextStyle.WINDOW:
+  case TextStyle.WINDOW_ALT:
+  case TextStyle.STATS_VALUE:
+    shadowXpos = 3;
+    shadowYpos = 3;
+    break;
+  case TextStyle.STATS_LABEL:
+  case TextStyle.MESSAGE:
+  case TextStyle.SETTINGS_LABEL:
+  case TextStyle.SETTINGS_LOCKED:
+  case TextStyle.SETTINGS_SELECTED:
+    break;
+  case TextStyle.BATTLE_INFO:
+  case TextStyle.MONEY:
+  case TextStyle.TOOLTIP_TITLE:
+    styleOptions.fontSize = defaultFontSize - 24;
+    shadowXpos = 3.5;
+    shadowYpos = 3.5;
+    break;
+  case TextStyle.PARTY:
+  case TextStyle.PARTY_RED:
+    styleOptions.fontSize = defaultFontSize - 30;
+    styleOptions.fontFamily = "pkmnems";
+    break;
+  case TextStyle.TOOLTIP_CONTENT:
+    styleOptions.fontSize = defaultFontSize - 32;
+    shadowXpos = 3;
+    shadowYpos = 3;
+    break;
+  case TextStyle.MOVE_INFO_CONTENT:
+    styleOptions.fontSize = defaultFontSize - 40;
+    shadowXpos = 3;
+    shadowYpos = 3;
+    break;
+  }
+
+  const shadowColor = getTextColor(style, true, uiTheme);
+
+  if (extraStyleOptions) {
+    if (extraStyleOptions.fontSize) {
+      const sizeRatio = parseInt(extraStyleOptions.fontSize.toString().slice(0, -2)) / parseInt(styleOptions.fontSize.toString().slice(0, -2));
+      shadowXpos *= sizeRatio;
+    }
+    styleOptions = Object.assign(styleOptions, extraStyleOptions);
+  }
+
+  return [ scale, styleOptions, shadowColor, shadowXpos, shadowYpos ];
+}
+
+export function getBBCodeFrag(content: string, textStyle: TextStyle, uiTheme: UiTheme = UiTheme.DEFAULT): string {
+  return `[color=${getTextColor(textStyle, false, uiTheme)}][shadow=${getTextColor(textStyle, true, uiTheme)}]${content}`;
 }
 
 export function getTextColor(textStyle: TextStyle, shadow?: boolean, uiTheme: UiTheme = UiTheme.DEFAULT): string {
@@ -100,3 +228,33 @@ export function getTextColor(textStyle: TextStyle, shadow?: boolean, uiTheme: Ui
     return !shadow ? "#f88880" : "#f83018";
   }
 }
+
+// export function getModifierTierTextTint(tier: ModifierTier): integer {
+//   switch (tier) {
+//   case ModifierTier.COMMON:
+//     return 0xf8f8f8;
+//   case ModifierTier.GREAT:
+//     return 0x4998f8;
+//   case ModifierTier.ULTRA:
+//     return 0xf8d038;
+//   case ModifierTier.ROGUE:
+//     return 0xdb4343;
+//   case ModifierTier.MASTER:
+//     return 0xe331c5;
+//   case ModifierTier.LUXURY:
+//     return 0xe74c18;
+//   }
+// }
+//
+// export function getEggTierTextTint(tier: EggTier): integer {
+//   switch (tier) {
+//   case EggTier.COMMON:
+//     return getModifierTierTextTint(ModifierTier.COMMON);
+//   case EggTier.GREAT:
+//     return getModifierTierTextTint(ModifierTier.GREAT);
+//   case EggTier.ULTRA:
+//     return getModifierTierTextTint(ModifierTier.ULTRA);
+//   case EggTier.MASTER:
+//     return getModifierTierTextTint(ModifierTier.MASTER);
+//   }
+// }
