@@ -20,6 +20,10 @@ export default [
             "no-var": "error", // Disallows the use of var, enforcing let or const instead
             "prefer-const": "error", // Prefers the use of const for variables that are never reassigned
             "no-undef": "off", // Disables the rule that disallows the use of undeclared variables (TypeScript handles this)
+            // "@typescript-eslint/no-unused-vars": [ "error", {
+            //     "args": "none", // Allows unused function parameters. Useful for functions with specific signatures where not all parameters are always used.
+            //     "ignoreRestSiblings": true // Allows unused variables that are part of a rest property in object destructuring. Useful for excluding certain properties from an object while using the rest.
+            // }],
             "eol-last": ["error", "always"], // Enforces at least one newline at the end of files
             "@typescript-eslint/semi": ["error", "always"], // Requires semicolons for TypeScript-specific syntax
             "semi": "off", // Disables the general semi rule for TypeScript files
